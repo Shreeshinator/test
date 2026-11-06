@@ -1,0 +1,555 @@
+1
+00:00:00,000 --> 00:00:03,793
+Four observations, two features each.
+
+2
+00:00:04,043 --> 00:00:07,837
+Call them x and y.
+
+3
+00:00:08,087 --> 00:00:14,157
+The cloud leans up and to the right.
+
+4
+00:00:14,407 --> 00:00:21,995
+When x is large,
+y tends to be large too.
+
+5
+00:00:22,245 --> 00:00:29,833
+Can we find a direction
+along which they vary most?
+
+6
+00:00:30,083 --> 00:00:34,635
+That's the whole engine of PCA.
+
+7
+00:00:34,885 --> 00:00:39,438
+We'll build the answer
+from scratch.
+
+8
+00:00:39,688 --> 00:00:45,000
+No formulas until they're
+forced on us.
+
+9
+00:00:45,000 --> 00:00:50,614
+Meet the data:
+(5,3), (1,1), (4,4), (2,0).
+
+10
+00:00:50,864 --> 00:00:56,479
+Average x: 12 / 4 = 3.
+
+11
+00:00:56,729 --> 00:01:02,343
+Average y: 8 / 4 = 2.
+
+12
+00:01:02,593 --> 00:01:09,812
+μ = (3, 2) — the mean, in red.
+
+13
+00:01:10,062 --> 00:01:18,083
+We care how the cloud spreads,
+not where it sits.
+
+14
+00:01:18,333 --> 00:01:23,145
+Subtract the mean
+from every point.
+
+15
+00:01:23,395 --> 00:01:29,010
+Watch the cloud slide
+to the origin.
+
+16
+00:01:29,260 --> 00:01:33,270
+Centred: (2,1), (−2,−1), (1,2), (−1,−2).
+
+17
+00:01:33,520 --> 00:01:39,135
+Same shape — measured
+from the middle.
+
+18
+00:01:39,385 --> 00:01:44,999
+From here on: deviations
+from the mean.
+
+19
+00:01:45,000 --> 00:01:49,721
+How spread out are the points?
+
+20
+00:01:49,971 --> 00:01:53,905
+Start with one variable:
+variance.
+
+21
+00:01:54,155 --> 00:01:58,877
+Subtract the mean,
+square each deviation.
+
+22
+00:01:59,127 --> 00:02:05,422
+Squaring kills signs —
+big gaps count more.
+
+23
+00:02:05,672 --> 00:02:12,754
+Add them up,
+divide by n − 1 (sample).
+
+24
+00:02:13,004 --> 00:02:17,725
+Population variance
+divides by n instead.
+
+25
+00:02:17,975 --> 00:02:21,909
+Var(x) = Var(y) = 10/3.
+
+26
+00:02:22,159 --> 00:02:28,454
+Variance sees only
+one axis at a time.
+
+27
+00:02:28,704 --> 00:02:35,000
+It can't tell x and y
+rise together.
+
+28
+00:02:35,000 --> 00:02:39,296
+Covariance measures
+moving together.
+
+29
+00:02:39,546 --> 00:02:44,916
+Positive — both rise together.
+
+30
+00:02:45,166 --> 00:02:53,759
+Negative — one rises
+as the other falls.
+
+31
+00:02:54,009 --> 00:03:01,527
+Near zero — no clear
+linear link.
+
+32
+00:03:01,777 --> 00:03:07,148
+Multiply each point's
+two deviations.
+
+33
+00:03:07,398 --> 00:03:14,916
+2, 2, 2, 2 — all positive.
+
+34
+00:03:15,166 --> 00:03:21,611
+Cov(x, y) = 8/3 ≈ 2.67.
+
+35
+00:03:21,861 --> 00:03:27,231
+Var(x) = Var(y) = 10/3.
+
+36
+00:03:27,481 --> 00:03:35,000
+These three numbers build
+the matrix next.
+
+37
+00:03:35,000 --> 00:03:40,648
+Take one centred point
+as a column vector.
+
+38
+00:03:40,898 --> 00:03:47,252
+Multiply it by its transpose —
+an outer product.
+
+39
+00:03:47,502 --> 00:03:51,738
+x′x′ᵀ = [[x², xy], [xy, y²]]
+
+40
+00:03:51,988 --> 00:03:56,224
+The dot product gives
+one number.
+
+41
+00:03:56,474 --> 00:04:01,416
+Do it for every point,
+then add.
+
+42
+00:04:01,666 --> 00:04:06,608
+(2,1) and (−2,−1)
+give the same matrix.
+
+43
+00:04:06,858 --> 00:04:11,800
+(1,2) and (−1,−2)
+give the same too.
+
+44
+00:04:12,050 --> 00:04:16,287
+Entry sums: 10, 8, 8, 10.
+
+45
+00:04:16,537 --> 00:04:20,067
+That's the scatter matrix S.
+
+46
+00:04:20,317 --> 00:04:24,553
+Top-left: x spread.
+Bottom-right: y spread.
+
+47
+00:04:24,803 --> 00:04:26,921
+Off-diagonal: joint variation.
+
+48
+00:04:27,171 --> 00:04:34,937
+C = S / (n − 1) = S / 3.
+
+49
+00:04:35,187 --> 00:04:39,423
+C = [[10/3, 8/3],
+      [8/3, 10/3]]
+
+50
+00:04:39,673 --> 00:04:44,615
+S and C carry
+the same directions.
+
+51
+00:04:44,865 --> 00:04:49,101
+Dividing by 3 only
+shrinks eigenvalues.
+
+52
+00:04:49,351 --> 00:04:54,999
+C is symmetric —
+both cross entries match.
+
+53
+00:04:55,000 --> 00:05:01,863
+Pick any direction — call it u.
+
+54
+00:05:02,113 --> 00:05:07,015
+Project every point onto u.
+
+55
+00:05:07,265 --> 00:05:15,109
+z = uᵀx′ — the shadow along u.
+
+56
+00:05:15,359 --> 00:05:23,203
+Double u → projections double
+→ Var ×4.
+
+57
+00:05:23,453 --> 00:05:29,335
+That's cheating. So: uᵀu = 1.
+
+58
+00:05:29,585 --> 00:05:36,449
+Try x: variance = 10/3 ≈ 3.33.
+
+59
+00:05:36,699 --> 00:05:40,621
+Try y: the same.
+
+60
+00:05:40,871 --> 00:05:46,753
+Try the diagonal:
+variance = 6.
+
+61
+00:05:47,003 --> 00:05:53,867
+What makes one direction
+better than another?
+
+62
+00:05:54,117 --> 00:06:00,000
+The one with greatest
+projected variance.
+
+63
+00:06:00,000 --> 00:06:05,793
+The projected values: zᵢ = uᵀxᵢ′.
+
+64
+00:06:06,043 --> 00:06:16,665
+Variance of the z's:
+Σ(zᵢ − z̄)² / (n − 1).
+
+65
+00:06:16,915 --> 00:06:23,674
+Centring ⇒ the z's
+average to zero.
+
+66
+00:06:23,924 --> 00:06:31,649
+So: Var(z) = Σzᵢ² / (n − 1).
+
+67
+00:06:31,899 --> 00:06:36,728
+zᵢ² = (uᵀxᵢ′)(uᵀxᵢ′)
+      = (uᵀxᵢ′)(xᵢ′ᵀu).
+
+68
+00:06:36,978 --> 00:06:42,771
+A scalar equals its own transpose.
+
+69
+00:06:43,021 --> 00:06:44,953
+Regroup: uᵀ(xᵢ′xᵢ′ᵀ)u.
+
+70
+00:06:45,203 --> 00:06:51,962
+The middle term is
+the outer product.
+
+71
+00:06:52,212 --> 00:06:59,937
+Factor the fixed u's
+out of the sum.
+
+72
+00:07:00,187 --> 00:07:06,946
+The remaining sum is
+the scatter matrix.
+
+73
+00:07:07,196 --> 00:07:12,990
+Var(z) = uᵀCu.
+The key formula.
+
+74
+00:07:13,240 --> 00:07:19,999
+uᵀSu differs only
+by n − 1.
+
+75
+00:07:20,000 --> 00:07:23,771
+Now the problem is precise:
+
+76
+00:07:24,021 --> 00:07:28,548
+max uᵀCu  s.t.  uᵀu = 1.
+
+77
+00:07:28,798 --> 00:07:33,324
+u is the direction we choose.
+
+78
+00:07:33,574 --> 00:07:38,100
+C holds spread and
+joint variation.
+
+79
+00:07:38,350 --> 00:07:42,877
+uᵀCu is the variance
+we're buying.
+
+80
+00:07:43,127 --> 00:07:47,653
+uᵀu = 1 blocks
+scaling cheats.
+
+81
+00:07:47,903 --> 00:07:53,938
+Solve the constraint
+with a multiplier — λ.
+
+82
+00:07:54,188 --> 00:07:59,469
+L = uᵀCu − λ(uᵀu − 1).
+
+83
+00:07:59,719 --> 00:08:05,000
+When the constraint holds,
+that term vanishes.
+
+84
+00:08:05,000 --> 00:08:09,770
+Differentiate. But expand first.
+
+85
+00:08:10,020 --> 00:08:21,946
+C = [[a, b], [b, d]], u = [p, q].
+
+86
+00:08:22,196 --> 00:08:30,545
+uᵀCu = ap² + 2bpq + dq².
+
+87
+00:08:30,795 --> 00:08:36,758
+∂/∂p = 2ap + 2bq.
+
+88
+00:08:37,008 --> 00:08:42,971
+∂/∂q = 2bp + 2dq.
+
+89
+00:08:43,221 --> 00:08:51,569
+∇(uᵀCu) = 2Cu —
+cross terms match.
+
+90
+00:08:51,819 --> 00:08:56,590
+…because C is symmetric.
+
+91
+00:08:56,840 --> 00:09:02,803
+Same trick: ∇(uᵀu) = 2u.
+
+92
+00:09:03,053 --> 00:09:16,172
+∇L = 2Cu − 2λu.
+At a max, ∇L = 0.
+
+93
+00:09:16,422 --> 00:09:19,999
+Cu = λu.
+
+94
+00:09:20,000 --> 00:09:27,361
+Cu = λu — C stretches u,
+never rotates it.
+
+95
+00:09:27,611 --> 00:09:32,763
+That's an eigenvector.
+λ is the eigenvalue.
+
+96
+00:09:33,013 --> 00:09:38,166
+Our best directions are
+eigenvectors of C.
+
+97
+00:09:38,416 --> 00:09:45,041
+For a unit eigenvector:
+uᵀCu = λ(uᵀu) = λ.
+
+98
+00:09:45,291 --> 00:09:50,444
+The eigenvalue IS
+the variance along it.
+
+99
+00:09:50,694 --> 00:09:55,847
+Eigenvalues are non-negative —
+C is PSD.
+
+100
+00:09:56,097 --> 00:10:00,513
+Symmetric ⇒ eigenvectors
+can be perpendicular.
+
+101
+00:10:00,763 --> 00:10:07,388
+v₁ · v₂ = ½ − ½ = 0.
+
+102
+00:10:07,638 --> 00:10:15,000
+S = 3C — same vectors,
+eigenvalues 18 and 2.
+
+103
+00:10:15,000 --> 00:10:17,735
+det(C − λI) = 0.
+
+104
+00:10:17,985 --> 00:10:21,815
+(10/3 − λ)² − (8/3)² = 0.
+
+105
+00:10:22,065 --> 00:10:25,347
+λ₁ = 6,  λ₂ = 2/3.
+
+106
+00:10:25,597 --> 00:10:29,427
+λ = 6:  v ∝ (1, 1).
+
+107
+00:10:29,677 --> 00:10:31,865
+v₁ = (1/√2)(1, 1).
+
+108
+00:10:32,115 --> 00:10:35,945
+λ = 2/3:  v ∝ (1, −1).
+
+109
+00:10:36,195 --> 00:10:38,384
+v₂ = (1/√2)(1, −1).
+
+110
+00:10:38,634 --> 00:10:45,199
+Any unit u = av₁ + bv₂,
+a² + b² = 1.
+
+111
+00:10:45,449 --> 00:10:49,278
+uᵀCu = 6a² + (2/3)b² ≤ 6.
+
+112
+00:10:49,528 --> 00:10:54,999
+Max at b = 0 —
+the long diagonal wins.
+
+113
+00:10:55,000 --> 00:10:59,987
+Data → centre → S → C.
+
+114
+00:11:00,237 --> 00:11:05,224
+Project → Var = uᵀCu → max.
+
+115
+00:11:05,474 --> 00:11:09,749
+Eigenvectors fall out.
+Keep the largest.
+
+116
+00:11:09,999 --> 00:11:13,562
+PC1 keeps 6/(20/3) = 90%.
+
+117
+00:11:13,812 --> 00:11:15,949
+PC2 keeps 10%.
+
+118
+00:11:16,199 --> 00:11:21,899
+Project onto PC1: a 1-D
+sketch keeping 90%.
+
+119
+00:11:22,149 --> 00:11:27,137
+The other 10% is discarded
+on purpose.
+
+120
+00:11:27,387 --> 00:11:33,087
+90% is this dataset —
+not a law.
+
+121
+00:11:33,337 --> 00:11:36,187
+Not an eigenvector trick.
+
+122
+00:11:36,437 --> 00:11:40,000
+The variance problem
+demands eigenvectors.
+
